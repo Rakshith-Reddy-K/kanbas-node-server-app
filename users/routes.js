@@ -83,6 +83,16 @@ function UserRoutes(app) {
     };
     const signin = async (req, res) => {
         const { username, password } = req.body;
+        if (isNullorEmpty(username)) {
+            res.status(400).json(
+                { message: "Please enter username" });
+                return
+        }
+        if (isNullorEmpty(password)) {
+            res.status(400).json(
+                { message: "Please enter password" });
+                return
+        }
         const currentUser = await dao.findUserByCredentials(username, password);
         if(currentUser) {
         req.session['currentUser'] = currentUser;

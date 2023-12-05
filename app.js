@@ -14,7 +14,10 @@ import "dotenv/config";
 const CONNECTION_STRING = process.env.DB_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
 mongoose.connect(CONNECTION_STRING);
 const app = express();
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL
+}));
 const sessionOptions = {
     secret: "any string",
     resave: false,
@@ -36,6 +39,13 @@ Lab5(app)
 CourseRoutes(app);
 ModuleRoutes(app);
 AssignmentRoutes(app);
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 app.listen(process.env.PORT || 4000);
 
 
